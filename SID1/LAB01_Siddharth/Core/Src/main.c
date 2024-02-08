@@ -60,43 +60,52 @@ void SystemClock_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
-void SystemClock_Config(void);
-
 int main(void) {
-    // Initialize the HAL Library
+    uint32_t debouncer = 0;
+
+    // Initialize the system
     HAL_Init();
 
-    // Configure the system clock
-    SystemClock_Config();
-
-    // Initialize the HAL GPIO Library
-    HAL_InitTick(0); // Configure the Systick timer
-
-    // Enable the GPIOC clock
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    // Enable GPIOC and GPIOA clocks
+    RCC->AHBENR |= RCC_AHBENR_GPIOCEN | RCC_AHBENR_GPIOAEN;
 
     // Configure PC6 and PC7 as output
-    GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+    GPIOC->MODER |= (GPIO_MODER_MODER6_0 | GPIO_MODER_MODER7_0); // Output mode
+    GPIOC->OTYPER &= ~(GPIO_OTYPER_OT_6 | GPIO_OTYPER_OT_7); // Push-pull
+    GPIOC->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR6 | GPIO_OSPEEDR_OSPEEDR7); // High speed
+    GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPDR6 | GPIO_PUPDR_PUPDR7); // No pull-up, no pull-down
 
-    // Start PC6 high and PC7 low
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+    // Configure PA0 as input
+    GPIOA->MODER &= ~(GPIO_MODER_MODER0_0 | GPIO_MODER_MODER0_1); // Input mode
+    GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPDR0_0 | GPIO_PUPDR_PUPDR0_1); // No pull-up, no pull-down
+
+    // Set PC6 high and PC7 low
+    GPIOC->BSRR = GPIO_BSRR_BS_6;
+    GPIOC->BRR = GPIO_BRR_BR_7;
 
     while (1) {
-        HAL_Delay(2000); // Delay 2000ms
+        debouncer = (debouncer << 1);
 
-        // Toggle the output state of both PC6 and PC7
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+        // Read PA0 input
+        if (GPIOA->IDR & GPIO_IDR_0) {
+            debouncer |= 0x01;
+        }
+
+        if (debouncer == 0xFFFFFFFF) {
+            // Triggered when button is steady high
+        }
+
+        if (debouncer == 0x00000000) {
+            // Triggered when button is steady low
+        }
+
+        if (debouncer == 0x7FFFFFFF) {
+            // Triggered once when transitioning to steady high
+            GPIOC->ODR ^= GPIO_ODR_6 | GPIO_ODR_7;
+            HAL_Delay(3); // Delay 3 milliseconds
+        }
     }
-}
-
+} 
 /*
   * @brief System Clock Configuration
   * @retval None
