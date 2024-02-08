@@ -1,0 +1,25 @@
+--cpu Cortex-M0
+"lab01_siddharth\startup_stm32f072xb.o"
+"lab01_siddharth\main.o"
+"lab01_siddharth\stm32f0xx_it.o"
+"lab01_siddharth\stm32f0xx_hal_msp.o"
+"lab01_siddharth\stm32f0xx_hal_tim.o"
+"lab01_siddharth\stm32f0xx_hal_tim_ex.o"
+"lab01_siddharth\stm32f0xx_hal_rcc.o"
+"lab01_siddharth\stm32f0xx_hal_rcc_ex.o"
+"lab01_siddharth\stm32f0xx_hal.o"
+"lab01_siddharth\stm32f0xx_hal_i2c.o"
+"lab01_siddharth\stm32f0xx_hal_i2c_ex.o"
+"lab01_siddharth\stm32f0xx_hal_gpio.o"
+"lab01_siddharth\stm32f0xx_hal_dma.o"
+"lab01_siddharth\stm32f0xx_hal_cortex.o"
+"lab01_siddharth\stm32f0xx_hal_pwr.o"
+"lab01_siddharth\stm32f0xx_hal_pwr_ex.o"
+"lab01_siddharth\stm32f0xx_hal_flash.o"
+"lab01_siddharth\stm32f0xx_hal_flash_ex.o"
+"lab01_siddharth\stm32f0xx_hal_exti.o"
+"lab01_siddharth\system_stm32f0xx.o"
+--strict --scatter "LAB01_Siddharth\LAB01_Siddharth.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "LAB01_Siddharth.map" -o LAB01_Siddharth\LAB01_Siddharth.axf
