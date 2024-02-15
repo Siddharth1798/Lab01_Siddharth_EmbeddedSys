@@ -68,44 +68,70 @@ int main(void) {
 
     // Enable GPIOC and GPIOA clocks
     RCC->AHBENR |= RCC_AHBENR_GPIOCEN | RCC_AHBENR_GPIOAEN;
+  	// Enable the SYSCFG clock
+    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 
-    // Configure PC6 and PC7 as output
-    GPIOC->MODER |= (GPIO_MODER_MODER6_0 | GPIO_MODER_MODER7_0); // Output mode
-    GPIOC->OTYPER &= ~(GPIO_OTYPER_OT_6 | GPIO_OTYPER_OT_7); // Push-pull
-    GPIOC->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR6 | GPIO_OSPEEDR_OSPEEDR7); // High speed
-    GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPDR6 | GPIO_PUPDR_PUPDR7); // No pull-up, no pull-down
+    // Configure PC6,PC7,PC8 and PC9 as output
+    GPIOC->MODER |= (GPIO_MODER_MODER6_0 | GPIO_MODER_MODER7_0 | GPIO_MODER_MODER8_0 | GPIO_MODER_MODER9_0); // Output mode
+    GPIOC->OTYPER &= ~(GPIO_OTYPER_OT_6 | GPIO_OTYPER_OT_7 | GPIO_OTYPER_OT_8 | GPIO_OTYPER_OT_9); // Push-pull
+    GPIOC->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEEDR6 | GPIO_OSPEEDR_OSPEEDR7 | GPIO_OSPEEDR_OSPEEDR8 | GPIO_OSPEEDR_OSPEEDR9); // Low speed
+    GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPDR6 | GPIO_PUPDR_PUPDR7 | GPIO_PUPDR_PUPDR8 | GPIO_PUPDR_PUPDR9); // No pull-up, no pull-down
 
-    // Configure PA0 as input
-    GPIOA->MODER &= ~(GPIO_MODER_MODER0_0 | GPIO_MODER_MODER0_1); // Input mode
-    GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPDR0_0 | GPIO_PUPDR_PUPDR0_1); // No pull-up, no pull-down
+    // Configure PA0 as input (digital mode)
+    GPIOA->MODER &= ~(GPIO_MODER_MODER0);  // Clear bits for PA0
+    
+	  // Set low-speed setting for PA0
+    GPIOA->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEEDR0);
+    
+		// Enable pull-down resistor for PA0
+    GPIOA->PUPDR |= (2);
+		
+		// Connect EXTI0 to PA0
+    SYSCFG->EXTICR[0] &= ~(SYSCFG_EXTICR1_EXTI0);
 
-    // Set PC6 high and PC7 low
-    GPIOC->BSRR = GPIO_BSRR_BS_6;
-    GPIOC->BRR = GPIO_BRR_BR_7;
+    // Configure EXTI0 to trigger on the rising edge
+    EXTI->RTSR |= EXTI_RTSR_TR0;
 
-    while (1) {
-        debouncer = (debouncer << 1);
+    // Enable EXTI0 interrupt
+    EXTI->IMR |= EXTI_IMR_MR0;
 
-        // Read PA0 input
-        if (GPIOA->IDR & GPIO_IDR_0) {
-            debouncer |= 0x01;
-        }
+    // Enable EXTI0 interrupt in NVIC (replace IRQn with the appropriate value)
+    NVIC_EnableIRQ(EXTI0_1_IRQn);
+		
+/*	  //Part 2.1: Change Priorities of  EXTI interrupt handler and systick to resolve starving interrupt issue
+    NVIC_SetPriority(EXTI0_1_IRQn, 1);  // for second part change priority to 3.
+	
+		
+	  //Part 2.2 - Set appropriate priority to systick handler interrupt
+  	NVIC_SetPriority(SysTick_IRQn, 2);
+*/
+		// Set PC9 high
+    GPIOC->BSRR = GPIO_BSRR_BS_9;
 
-        if (debouncer == 0xFFFFFFFF) {
-            // Triggered when button is steady high
-        }
 
-        if (debouncer == 0x00000000) {
-            // Triggered when button is steady low
-        }
 
-        if (debouncer == 0x7FFFFFFF) {
-            // Triggered once when transitioning to steady high
-            GPIOC->ODR ^= GPIO_ODR_6 | GPIO_ODR_7;
-            HAL_Delay(3); // Delay 3 milliseconds
-        }
-    }
-} 
+
+
+
+    while (1) 
+			{
+        // Toggle PC6 (Red LED)
+        GPIOC->ODR ^= GPIO_ODR_6;
+        HAL_Delay(650); // Delay 650 milliseconds
+      }
+		}
+volatile uint32_t i;
+void EXTI0_1_IRQHandler(void) 	{
+	  GPIOC->ODR ^= GPIO_ODR_8 | GPIO_ODR_9;
+	 /* for(i=0; i<1500000;i++)
+	  {}
+	  // Toggle green and orange LEDs
+	  GPIOC->ODR ^= GPIO_ODR_8 | GPIO_ODR_9;
+	  // Clear flag for input line 0 in the EXTI pending register*/
+	  EXTI->PR |= EXTI_PR_PR0;
+	}
+      
+
 /*
   * @brief System Clock Configuration
   * @retval None

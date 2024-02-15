@@ -124,6 +124,13 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+	static uint32_t counter = 0;
+	
+	counter++;
+
+    if (counter % 200 == 0) {
+			 GPIOC->ODR ^= (1 << 7);  // Toggle the state of pin 7 for 200ms
+    }
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */

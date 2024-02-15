@@ -3,7 +3,7 @@
 <title>Static Call Graph - [LAB01_Siddharth\LAB01_Siddharth.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image LAB01_Siddharth\LAB01_Siddharth.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Thu Feb  8 12:36:28 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Wed Feb 14 20:57:25 2024
 <BR><P>
 <H3>Maximum Stack Usage =         24 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -31,7 +31,7 @@ Function Pointers
  <LI><a href="#[f]">DMA1_Channel1_IRQHandler</a> from startup_stm32f072xb.o(.text) referenced from startup_stm32f072xb.o(RESET)
  <LI><a href="#[10]">DMA1_Channel2_3_IRQHandler</a> from startup_stm32f072xb.o(.text) referenced from startup_stm32f072xb.o(RESET)
  <LI><a href="#[11]">DMA1_Channel4_5_6_7_IRQHandler</a> from startup_stm32f072xb.o(.text) referenced from startup_stm32f072xb.o(RESET)
- <LI><a href="#[b]">EXTI0_1_IRQHandler</a> from startup_stm32f072xb.o(.text) referenced from startup_stm32f072xb.o(RESET)
+ <LI><a href="#[b]">EXTI0_1_IRQHandler</a> from main.o(.text.EXTI0_1_IRQHandler) referenced from startup_stm32f072xb.o(RESET)
  <LI><a href="#[c]">EXTI2_3_IRQHandler</a> from startup_stm32f072xb.o(.text) referenced from startup_stm32f072xb.o(RESET)
  <LI><a href="#[d]">EXTI4_15_IRQHandler</a> from startup_stm32f072xb.o(.text) referenced from startup_stm32f072xb.o(RESET)
  <LI><a href="#[9]">FLASH_IRQHandler</a> from startup_stm32f072xb.o(.text) referenced from startup_stm32f072xb.o(RESET)
@@ -231,9 +231,6 @@ Global Symbols
 <P><STRONG><a name="[11]"></a>DMA1_Channel4_5_6_7_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f072xb.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f072xb.o(RESET)
 </UL>
-<P><STRONG><a name="[b]"></a>EXTI0_1_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f072xb.o(.text))
-<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f072xb.o(RESET)
-</UL>
 <P><STRONG><a name="[c]"></a>EXTI2_3_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f072xb.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f072xb.o(RESET)
 </UL>
@@ -360,6 +357,9 @@ Global Symbols
 
 <P><STRONG><a name="[70]"></a>__semihosting_library_function</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, indicate_semi.o(.text), UNUSED)
 
+<P><STRONG><a name="[b]"></a>EXTI0_1_IRQHandler</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(.text.EXTI0_1_IRQHandler))
+<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f072xb.o(RESET)
+</UL>
 <P><STRONG><a name="[3b]"></a>HAL_Delay</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, stm32f0xx_hal.o(.text.HAL_Delay))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = HAL_Delay
 </UL>
@@ -429,7 +429,7 @@ Global Symbols
 <P><STRONG><a name="[3]"></a>SVC_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f0xx_it.o(.text.SVC_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f072xb.o(RESET)
 </UL>
-<P><STRONG><a name="[5]"></a>SysTick_Handler</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, stm32f0xx_it.o(.text.SysTick_Handler))
+<P><STRONG><a name="[5]"></a>SysTick_Handler</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, stm32f0xx_it.o(.text.SysTick_Handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = SysTick_Handler
 </UL>
 <BR>[Calls]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_IncTick
@@ -439,7 +439,7 @@ Global Symbols
 <P><STRONG><a name="[26]"></a>SystemInit</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, system_stm32f0xx.o(.text.SystemInit))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f072xb.o(.text)
 </UL>
-<P><STRONG><a name="[31]"></a>main</STRONG> (Thumb, 112 bytes, Stack size 0 bytes, main.o(.text.main))
+<P><STRONG><a name="[31]"></a>main</STRONG> (Thumb, 140 bytes, Stack size 0 bytes, main.o(.text.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = main &rArr; HAL_Init &rArr; HAL_InitTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
