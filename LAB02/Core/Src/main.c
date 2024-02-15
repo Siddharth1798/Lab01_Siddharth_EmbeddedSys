@@ -96,7 +96,7 @@ int main(void)
 
     // Enable EXTI0 interrupt in NVIC (replace IRQn with the appropriate value)
     NVIC_EnableIRQ(EXTI0_1_IRQn);
-/*	
+	
     //Part 2.1: Change Priorities of  EXTI interrupt handler and systick to resolve starving interrupt issue
     NVIC_SetPriority(EXTI0_1_IRQn, 1);  
 		//NVIC_SetPriority(EXTI0_1_IRQn, 3); // for second part change priority to 3.
@@ -104,7 +104,7 @@ int main(void)
 		
 	  //Part 2.2 - Set appropriate priority to systick handler interrupt
   	NVIC_SetPriority(SysTick_IRQn, 2);
-*/
+
 		// Set PC9 high
     GPIOC->BSRR = GPIO_BSRR_BS_9;
 
@@ -118,11 +118,11 @@ int main(void)
 volatile uint32_t i;
 void EXTI0_1_IRQHandler(void) 	{
 	  GPIOC->ODR ^= GPIO_ODR_8 | GPIO_ODR_9;
-	/*  for(i=0; i<1500000;i++)
+	  for(i=0; i<1500000;i++)
 	  {}
 	  // Toggle green and orange LEDs
 	  GPIOC->ODR ^= GPIO_ODR_8 | GPIO_ODR_9;
-	  // Clear flag for input line 0 in the EXTI pending register  */
+	  // Clear flag for input line 0 in the EXTI pending register 
 	  EXTI->PR |= EXTI_PR_PR0;
 	}
       
