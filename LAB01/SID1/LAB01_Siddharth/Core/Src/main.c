@@ -62,87 +62,35 @@ void SystemClock_Config(void);
   */
 int main(void) {
 	
-    // Initialize the system
-    HAL_Init();
-	  __HAL_RCC_GPIOC_CLK_ENABLE();
-    // Enable GPIOC and GPIOA clocks
-    RCC->AHBENR |= RCC_AHBENR_GPIOCEN | RCC_AHBENR_GPIOAEN;
-  	// Enable the SYSCFG clock
-    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
-  	// Enable TIM2 clock
-    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
-			// Enable TIM3 clock
-    RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
-		
-	  
-	  // Configure TIM2 to generate an interrupt at 4 Hz
-    TIM2->PSC = 7999;  // Prescaler, results in a timer clock of 4 kHz (8000000 Hz / (7999 + 1))
-    TIM2->ARR = 250;   // Auto-reload value, results in an interrupt every 250 ms (1000 / 4 Hz )
-
-	  TIM2->DIER  |= TIM_DIER_UIE; 
-  
-  	TIM2->CR1  |= TIM_CR1_CEN; 
 	
-	  GPIOC->ODR |=(1<<8);
-		
-	  NVIC_EnableIRQ(TIM2_IRQn);
-		
-				
-    // Configure PC6,PC7,PC8 and PC9 as output
-   GPIO_InitTypeDef initc89 = {GPIO_PIN_8 | GPIO_PIN_9, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW,GPIO_NOPULL};
-	 HAL_GPIO_Init(GPIOC, &initc89);
+	   HAL_Init();
+    // Configure the system clock SystemClock_Config();
+    SystemClock_Config();
+    // Initialize the HAL GPIO Library
 
-    
+    HAL_InitTick(0); // Configure the Systick-timer
 
-    // 2. Configure GPIO pins for TIM3 CH1 and CH2 as alternate function (AF1 for STM32F0)
-		GPIO_InitTypeDef initc67 = {GPIO_PIN_6 | GPIO_PIN_7, GPIO_MODE_AF_PP, GPIO_SPEED_FREQ_LOW,GPIO_NOPULL};
+    // Enable the GPIOC clock
+	  __HAL_RCC_GPIOC_CLK_ENABLE();
 
-		HAL_GPIO_Init(GPIOC, &initc67);
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-    GPIOC->AFR[0]=0;
-		
-		
-    // Configure TIM3 without enabling or starting the timer
-    TIM3->PSC = 7;           // Prescaler, adjust for your requirements
-    TIM3->ARR = 1250;          // Auto-reload value, determines PWM frequency (800 Hz)
+    // Configure PC6-and-PC7 as output
+		GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+		GPIO_InitStruct. Pull = GPIO_NOPULL;
+		HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    TIM3->CCMR1 &= ~(TIM_CCMR1_CC1S);
-		TIM3->CCMR1 &= ~(TIM_CCMR1_CC2S);
-		
-		TIM3->CCMR1 |= (TIM_CCMR1_OC1M_0 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);
-		TIM3->CCMR1 |= (TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2);
+    // Start PC6 high and PC7-low HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO PIN SET); HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 
-    // Configure output channels for PWM mode
-    TIM3->CCMR1 |= TIM_CCMR1_OC1PE;  // PWM Mode 2 for channel 1
-   // TIM3->CCMR1 |= 0;                    // PWM Mode 1 for channel 2
-    TIM3->CCMR1 |= TIM_CCMR1_OC2PE;    // Enable output compare preload for channels 1 & 2
-   
-  	// Enable output channels
-    TIM3->CCER |= TIM_CCER_CC1E;
-    TIM3->CCER |= TIM_CCER_CC2E;
+    while (1) { 
+			HAL_Delay(2000); // Delay 2000ms
 
-    // Set duty cycle (e.g., 20% of ARR)
-    TIM3->CCR1 = 1125;  // 20% duty cycle for CH1
-    TIM3->CCR2 = 112; // 20% duty cycle for CH2
-
-	    // Enable TIM3 counter
-    TIM3->CR1 |= TIM_CR1_CEN;
-
-    while (1) 
-			{
-        /*// Toggle PC6 (Red LED)
-        GPIOC->ODR ^= GPIO_ODR_6;
-        HAL_Delay(650); // Delay 650 milliseconds
-				*/
-      }
+    // Toggle the output state of both PC6 and PC7 
+			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 		}
-		void TIM2_IRQHandler(void)
-		{
-			 if (TIM2->SR & TIM_SR_UIF) { // Check update interrupt flag
-        GPIOC->ODR ^= (1 << 8) | (1 << 9); // Toggle green (PC8) and orange (PC9) LEDs
-        TIM2->SR &= ~TIM_SR_UIF; // Clear update interrupt flag
-    }
-		}
+	}
 
 /*
   * @brief System Clock Configuration
