@@ -98,8 +98,8 @@ int main(void)
     NVIC_EnableIRQ(EXTI0_1_IRQn);
 	
     //Part 2.1: Change Priorities of  EXTI interrupt handler and systick to resolve starving interrupt issue
-    NVIC_SetPriority(EXTI0_1_IRQn, 1);  
-		//NVIC_SetPriority(EXTI0_1_IRQn, 3); // for second part change priority to 3.
+    //NVIC_SetPriority(EXTI0_1_IRQn, 1);  
+		NVIC_SetPriority(EXTI0_1_IRQn, 3); // for second part change priority to 3.
 	
 		
 	  //Part 2.2 - Set appropriate priority to systick handler interrupt
