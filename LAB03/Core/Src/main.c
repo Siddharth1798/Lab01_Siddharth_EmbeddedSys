@@ -73,12 +73,12 @@ int main(void)
   	// Enable TIM2 clock
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
 		// Enable TIM3 clock
-    RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+ //   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 		
 	  
 	  // Configure TIM2 to generate an interrupt at 4 Hz
     TIM2->PSC = 7999;  // Prescaler, results in a timer clock of 4 kHz (8000000 Hz / (7999 + 1))
-    TIM2->ARR = 250;   // Auto-reload value, results in an interrupt every 250 ms (1000 / 4 Hz )
+    TIM2->ARR = 125;   // Auto-reload value, results in an interrupt every 250 ms (1000 / 4 Hz )
 
 	  TIM2->DIER  |= TIM_DIER_UIE; // Enable the Update Interrupt for Timer 2
   
@@ -104,8 +104,8 @@ int main(void)
 		
 		
     // Configure TIM3 without enabling or starting the timer
-    TIM3->PSC = 7;           // Prescaler, adjust for your requirements
-    TIM3->ARR = 1250;          // Auto-reload value, determines PWM frequency (800 Hz)
+    TIM3->PSC = 9;           // Prescaler, adjust for your requirements
+    TIM3->ARR = 1000;          // Auto-reload value, determines PWM frequency (800 Hz)
 
 		// Clear the bits related to CC1S and CC2S in the Capture/Compare Mode Register 1 (CCMR1)
     TIM3->CCMR1 &= ~(TIM_CCMR1_CC1S);
@@ -127,18 +127,15 @@ int main(void)
     TIM3->CCER |= TIM_CCER_CC2E;
 
     // Set duty cycle (e.g., 20% of ARR)
-    TIM3->CCR1 = 1125;  // 20% duty cycle for CH1
-    TIM3->CCR2 = 112; // 20% duty cycle for CH2
+    TIM3->CCR1 = 700;  // 20% duty cycle for CH1
+    TIM3->CCR2 = 700; // 20% duty cycle for CH2
 
 	  // Enable TIM3 counter
     TIM3->CR1 |= TIM_CR1_CEN;
 
     while (1) 
 			{
-        /*// Toggle PC6 (Red LED)
-        GPIOC->ODR ^= GPIO_ODR_6;
-        HAL_Delay(650); // Delay 650 milliseconds
-				*/
+
       }
 		}
 		

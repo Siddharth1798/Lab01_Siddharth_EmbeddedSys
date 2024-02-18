@@ -3,9 +3,9 @@
 <title>Static Call Graph - [LAB03\LAB03.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image LAB03\LAB03.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Thu Feb 15 01:25:03 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Sun Feb 18 14:01:42 2024
 <BR><P>
-<H3>Maximum Stack Usage =         96 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        104 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 __rt_entry_main &rArr; main &rArr; HAL_GPIO_Init
 <P>
@@ -186,7 +186,7 @@ Global Symbols
 <P><STRONG><a name="[65]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[30]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 96 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 104 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; HAL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -433,8 +433,8 @@ Global Symbols
 <P><STRONG><a name="[15]"></a>TIM2_IRQHandler</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, main.o(.text.TIM2_IRQHandler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f072xb.o(RESET)
 </UL>
-<P><STRONG><a name="[31]"></a>main</STRONG> (Thumb, 228 bytes, Stack size 40 bytes, main.o(.text.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = main &rArr; HAL_GPIO_Init
+<P><STRONG><a name="[31]"></a>main</STRONG> (Thumb, 224 bytes, Stack size 48 bytes, main.o(.text.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = main &rArr; HAL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
 <LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
