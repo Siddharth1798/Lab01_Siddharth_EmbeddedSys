@@ -73,7 +73,7 @@ int main(void)
   	// Enable TIM2 clock
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
 		// Enable TIM3 clock
- //   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+    RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 		
 	  
 	  // Configure TIM2 to generate an interrupt at 4 Hz
