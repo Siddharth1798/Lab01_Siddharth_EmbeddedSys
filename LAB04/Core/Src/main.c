@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
-  **********
+  **
   * @file           : main.c
   * @brief          : Main program body
-  **********
+  **
   * @attention
   *
   * Copyright (c) 2024 STMicroelectronics.
@@ -13,7 +13,7 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
-  **********
+  **
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
@@ -94,15 +94,25 @@ int main(void)
 	// Enable USART3 clock
 	RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
 	
-	//Enabling pins 6 and 7 (red and blue)
-	GPIO_InitTypeDef initc67 = {GPIO_PIN_6 | GPIO_PIN_7, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW,GPIO_NOPULL};
-  HAL_GPIO_Init(GPIOC, &initc67);
+	 // Configure-PC6-and-PC7-as-output
+
+    GPIOC->MODER |= (GPIO_MODER_MODER6_0 | GPIO_MODER_MODER7_0); // Output mode
+    GPIOC->OTYPER &= ~(GPIO_OTYPER_OT_6 | GPIO_OTYPER_OT_7); // Push-pull 
+	  GPIOC->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR6 | GPIO_OSPEEDR_OSPEEDR7); // High speed 
+	  GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPDR6 | GPIO_PUPDR_PUPDR7); // No pull-up, no pull-down
+	 // Configure-PC8-and-PC9-as-output
+
+    GPIOC->MODER |= (GPIO_MODER_MODER8_0 | GPIO_MODER_MODER9_0); // Output mode
+    GPIOC->OTYPER &= ~(GPIO_OTYPER_OT_8 | GPIO_OTYPER_OT_9); // Push-pull 
+	  GPIOC->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR8 | GPIO_OSPEEDR_OSPEEDR9); // High speed 
+	  GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPDR8 | GPIO_PUPDR_PUPDR9); // No pull-up, no pull-down
 	
-	//Enabling pins 8 and 9 (green and orange)
-	GPIO_InitTypeDef initc89 = {GPIO_PIN_8 | GPIO_PIN_9, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW,GPIO_NOPULL};
-  HAL_GPIO_Init(GPIOC, &initc89);
-	
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIOC->ODR ^= GPIO_ODR_8;
+	GPIOC->ODR ^= GPIO_ODR_9;
+  GPIOC->ODR ^= GPIO_ODR_6;
+	GPIOC->ODR ^= GPIO_ODR_7;	
+
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 	
   // Set PC4 and PC5 to Alternate Function mode
   GPIOC->MODER &= ~(GPIO_MODER_MODER4 | GPIO_MODER_MODER5);
@@ -121,24 +131,63 @@ int main(void)
 	
   while (1)
   {
+		int c=0;
 		USART3_SendString("\nCmd?\n");
     char ch = USART3_ReadChar();  // Read a character from USART3
- 
-    // Process the received character
+   		 USART3_SendString("\nAction?\n");
+		char action = USART3_ReadChar();
+		// Process the received character
 		
 		if(ch == 'o' || ch == 'O'){
-			GPIOC->ODR ^= GPIO_ODR_8; USART3_SendString("\nORANGE LED TURN ON\n");}  // Through If condition if the character entered is 'o' or 'O' the orange LED glows
-		else if(ch == 'g' || ch == 'G'){
-			GPIOC->ODR ^= GPIO_ODR_9; USART3_SendString("\nGREEN LED TURN ON\n");} // Through elseIf condition if the character entered is 'g' or 'G' the green LED glows
-		else if(ch == 'r' || ch == 'R'){
-			GPIOC->ODR ^= GPIO_ODR_6; USART3_SendString("\nRED LED TURN ON\n");} // Through elseIf condition if the character entered is 'g' or 'G' the green LED glows
-		else if(ch == 'b' || ch == 'B'){
-			GPIOC->ODR ^= GPIO_ODR_7; USART3_SendString("\nBLUE LED TURN ON\n");} // Through elseIf condition if the character entered is 'g' or 'G' the green LED glows
-		else
-		 USART3_SendString("Error: Unrecognized command.\n\n"); 
-}
-}
 
+			if(action == '0'){
+			      GPIOC->BSRR |= GPIO_PIN_8 << 16; USART3_SendString("\nORANGE LED TURN OFF\n");}			// Through If condition if the character entered is 'o' or 'O' the orange LED glows off.
+		  else if(action == '1'){
+				 GPIOC->BSRR |= GPIO_PIN_8; USART3_SendString("\nORANGE LED TURN ON\n");}	     // Through If condition if the character entered is 'o' or 'O' the orange LED glows
+			else if(action == '2'){
+			while(c<10){GPIOC->ODR ^= GPIO_ODR_8;HAL_Delay(1000);c++;};	// Toggle the LED (assuming GPIO_PIN_5 is the pin connected to the LED)
+			USART3_SendString("\nORANGE LED TOGGLING\n");}
+			else
+			USART3_SendString("\nError: Unrecognised action of LED.\n"); 
+	 	}
+		else if(ch == 'g' || ch == 'G'){
+			if(action == '0'){
+          GPIOC->BSRR |= GPIO_PIN_9 << 16;USART3_SendString("\nGREEN LED TURN OFF\n");}	       // Through If condition if the character entered is 'o' or 'O' the orange LED glows off.
+		  else if(action == '1'){
+				 GPIOC->BSRR |= GPIO_PIN_9; USART3_SendString("\nGREEN LED TURN ON\n");}	       // Through If condition if the character entered is 'o' or 'O' the orange LED glows
+			else if(action == '2'){
+				while(c<10){GPIOC->ODR ^= GPIO_ODR_9;HAL_Delay(1000);c++;};      // Toggle the LED (assuming GPIO_PIN_5 is the pin connected to the LED)
+			  USART3_SendString("\nGREEN LED TOGGLING\n");}
+			else
+			USART3_SendString("\nError: Unrecognised action of LED.\n"); 
+		}	
+		else if(ch == 'r' || ch == 'R'){
+			if(action == '0'){
+          GPIOC->BSRR |= GPIO_PIN_6 << 16; USART3_SendString("\nRED LED TURN OFF\n");}       // Through If condition if the character entered is 'o' or 'O' the orange LED glows off.
+		  else if(action == '1'){
+				 GPIOC->BSRR |= GPIO_PIN_6;USART3_SendString("\nRED LED TURN ON\n");}	        // Through If condition if the character entered is 'o' or 'O' the orange LED glows
+			else if(action == '2'){
+				while(c<10){GPIOC->ODR ^= GPIO_ODR_6;HAL_Delay(1000);c++;};      // Toggle the LED (assuming GPIO_PIN_5 is the pin connected to the LED)
+			  USART3_SendString("\nRED LED TOGGLING\n");}	
+			else
+			USART3_SendString("\nError: Unrecognised action of LED.\n"); 
+		}	
+		else if(ch == 'b' || ch == 'B'){
+			if(action == '0'){
+          GPIOC->BSRR |= GPIO_PIN_7 << 16;USART3_SendString("\nBLUE LED TURN OFF\n");}	       // Through If condition if the character entered is 'o' or 'O' the orange LED glows off.
+		  else if(action == '1'){
+				 GPIOC->BSRR |= GPIO_PIN_7; USART3_SendString("\nBLUE LED TURN ON\n");}	       // Through If condition if the character entered is 'o' or 'O' the orange LED glows
+			else if(action == '2'){
+				while(c<10){GPIOC->ODR ^= GPIO_ODR_7;HAL_Delay(1000);c++;};      // Toggle the LED (assuming GPIO_PIN_5 is the pin connected to the LED)
+			  USART3_SendString("\nBLUE LED TOGGLING\n");}	
+			else
+			USART3_SendString("\nError: Unrecognised action of LED.\n"); 
+			}	
+		else{
+			USART3_SendString("\n\nError: Unrecognized command.\n\n");
+    }
+	}
+}
 /**
   * @brief System Clock Configuration
   * @retval None
