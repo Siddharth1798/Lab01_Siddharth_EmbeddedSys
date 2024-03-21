@@ -202,7 +202,7 @@ int main(void)
     GPIOC->ODR ^= GPIO_ODR_6;
 	  GPIOC->ODR ^= GPIO_ODR_7;	
 		
-		/*
+		
 		
 		// Step 1: Set transaction parameters in CR2 register
     I2C2->CR2 = (0x69 << 1) | (1 << 16) | I2C_CR2_START;
@@ -254,7 +254,7 @@ int main(void)
     }
 
     // Step 9: Set the STOP bit in CR2 register
-    I2C2->CR2 |= I2C_CR2_STOP;  */
+    I2C2->CR2 |= I2C_CR2_STOP;  
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
