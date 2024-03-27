@@ -93,8 +93,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
-	   GPIOA->MODER |= 3;
-	   GPIOA->PUPDR &= -3;
+	   GPIOC->MODER |= 3;
+	   GPIOC->PUPDR &= -3;
 
 	// RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
 	 RCC->APB1ENR |= RCC_APB1ENR_DACEN;
