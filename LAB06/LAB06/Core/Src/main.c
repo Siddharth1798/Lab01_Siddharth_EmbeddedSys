@@ -61,6 +61,20 @@ void SystemClock_Config(void);
   * @retval int
   */
 	
+// Sine Wave: 8-bit, 32 samples/cycle
+const uint8_t sine_table[32] = {127,151,175,197,216,232,244,251,254,251,244,
+232,216,197,175,151,127,102,78,56,37,21,9,2,0,2,9,21,37,56,78,102};
+// Triangle Wave: 8-bit, 32 samples/cycle
+const uint8_t triangle_table[32] = {0,15,31,47,63,79,95,111,127,142,158,174,
+190,206,222,238,254,238,222,206,190,174,158,142,127,111,95,79,63,47,31,15};
+// Sawtooth Wave: 8-bit, 32 samples/cycle
+const uint8_t sawtooth_table[32] = {0,7,15,23,31,39,47,55,63,71,79,87,95,103,
+111,119,127,134,142,150,158,166,174,182,190,198,206,214,222,230,238,246};
+// Square Wave: 8-bit, 32 samples/cycle
+const uint8_t square_table[32] = {254,254,254,254,254,254,254,254,254,254,
+254,254,254,254,254,254,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	
+	
 int main(void)
 {
 
@@ -93,14 +107,24 @@ int main(void)
 
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
-	   GPIOC->MODER |= 3;
-	   GPIOC->PUPDR &= -3;
+	   GPIOA->MODER |= 3;
+	   GPIOA->PUPDR &= -3;
 
-	// RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
+	 RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
 	 RCC->APB1ENR |= RCC_APB1ENR_DACEN;
-	 //ADC1->CFGR1 |= 1<<4 | 1<<13;
-	 ADC1->CHSELR |= ADC_CHSELR_CHSEL10;
+	//ADC1->CFGR1 |= 1<<4 | 1<<13;
+	 //ADC1->CHSELR |= ADC_CHSELR_CHSEL10;
 	 
+    // Enable GPIOA clock
+    RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
+
+    // Configure PA4 as analog mode
+    GPIOA->MODER |= GPIO_MODER_MODER4_Msk; // Set PA4 to analog mode
+    GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR4_Msk;
+	 
+	 DAC->SWTRIGR |= 1; //Software Trigger
+	 DAC->CR |= 1 ;
+	/* 
 	 if ((ADC1->CR & ADC_CR_ADEN) != 0)
 	 {
 		 ADC1->CR |= ADC_CR_ADDIS;
@@ -120,11 +144,22 @@ int main(void)
 	 
 	 while ((ADC1->ISR & ADC_ISR_ADRDY) != 0);
 	 ADC1->CR |= ADC_CR_ADSTART;
-		 
+		 */
+	 int i = 0;
+	 while(1)    //Application loop to read the sine/triangle wave
+	 {
+		 i++;
+		 if(i>=32){
+			 i = 0;
+			 	//	HAL_Delay(1);
 
+		 }
+		 DAC->DHR8R1 = sine_table[i];
+		//DAC->DHR8R1 = triangle_table[i];
 		 
-	 
-	 while(1)
+		 
+	 } 
+	/* while(1)
 	 {
 		 while(!(ADC1->ISR >> 2 & 1));
 		 
@@ -145,7 +180,7 @@ int main(void)
 				GPIOC->ODR |= GPIO_ODR_9;
 			else
 				GPIOC->ODR &=GPIO_ODR_9;
-	 }
+	 }*/
 }
 
 /**
